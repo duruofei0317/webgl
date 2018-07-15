@@ -16,14 +16,16 @@
     }
 </script>
 <script>
-var vShaderSource=getScriptSource("vShader");
-var fShaderSource=getScriptSource("fShader")
 var canvas = document.getElementById("canvas");
 var gl = canvas.getContext("webgl");
-addShader(gl,vShaderSource,fShaderSource);
-gl.clearColor(0.9,0.9,0.9,1);
-gl.clear(gl.COLOR_BUFFER_BIT);
-gl.drawArrays(gl.POINTS,0,1);
+var vShaderSource=getScriptSource("vShader");
+var fShaderSource=getScriptSource("fShader")
+var shaderProgram = addShader(gl,vShaderSource,fShaderSource);
+function draw(gl,shaderProgram)
+{
+	gl.drawArrays(gl.POINTS,0,1);
+}
+render(true,gl,shaderProgram,draw);
 </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 #################
 ## Eclipse
 #################
-
+*.bat
 *.pydevproject
 .project
 .metadata
