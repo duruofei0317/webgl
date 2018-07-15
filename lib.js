@@ -40,6 +40,26 @@ function render(clean,gl,shaderProgram,draw,r=0,g=0,b=0)
 		clearBackground(gl,r,g,b);
 	}
 	gl.useProgram(shaderProgram);
-	draw(gl);
+	draw(gl,shaderProgram);
 }
-
+function setProgramAttributenf(n,gl,program,attribute,x=0.0,y=0.0,z=0.0,w=1)
+{
+	var position = gl.getAttribLocation(program,attribute);
+	if(n==1)
+	{
+		gl.vertexAttrib1f(position,x);
+	}
+	else if(n==2)
+	{
+		gl.vertexAttrib2f(position,x,y);
+	}
+	else if(n==3)
+	{
+		gl.vertexAttrib3f(position,x,y,z);
+	}
+	else
+	{
+		gl.vertexAttrib4f(position,x,y,z,w);
+	}
+	
+}

@@ -4,11 +4,12 @@
 </head>
 <body>
 <canvas id="canvas" height="600" width="600" style="background-color:black"></canvas>
-<button id="button">button</button>
 <script id="vShader" type="x-shader/x-vertex">
+    attribute vec4 a_Postion;
+    attribute float a_PointSize;
     void main(){
-        gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
-        gl_PointSize = 10.0;
+        gl_Position = a_Postion;
+        gl_PointSize = a_PointSize;
     }
 </script>
 <script id="fShader" type="x-shader/x-fragment">
@@ -17,6 +18,7 @@
     }
 </script>
 <script>
+var postions=[];
 var canvas = document.getElementById("canvas");
 var gl = canvas.getContext("webgl");
 var vShaderSource=getScriptSource("vShader");
@@ -24,9 +26,19 @@ var fShaderSource=getScriptSource("fShader")
 var shaderProgram = addShader(gl,vShaderSource,fShaderSource);
 function draw(gl,shaderProgram)
 {
-	gl.drawArrays(gl.POINTS,0,1);
+	setProgramAttributenf(1,gl,shaderProgram,"a_PointSize",2.0);
+	for(var i=0;i<postions.length;i+=2)
+	{
+		setProgramAttributenf(3,gl,shaderProgram,"a_Postion",postions[i],postions[i+1]);
+		gl.drawArrays(gl.POINTS,0,1);
+	}
 }
 render(true,gl,shaderProgram,draw);
+addElementClickById("canvas",function(e){
+	postions.push((e.layerX-300)/300);
+	postions.push((300-e.layerY)/300);
+	render(true,gl,shaderProgram,draw);
+});
 </script>
 </body>
 </html>
