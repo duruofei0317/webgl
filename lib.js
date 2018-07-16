@@ -63,3 +63,24 @@ function setProgramAttributenf(n,gl,program,attribute,x=0.0,y=0.0,z=0.0,w=1)
 	}
 	
 }
+function setProgramUniformnf(n,gl,program,attribute,x=0.0,y=0.0,z=0.0,w=1)
+{
+	var position = gl.getUniformLocation(program,attribute);
+	if(n==1)
+	{
+		gl.uniform1f(position,x);
+	}
+	else if(n==2)
+	{
+		gl.uniform2f(position,x,y);
+	}
+	else if(n==3)
+	{
+		gl.uniform3f(position,x,y,z);
+	}
+	else
+	{
+		gl.uniform4f(position,x,y,z,w);
+	}
+	
+}
