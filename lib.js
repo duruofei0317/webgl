@@ -84,3 +84,12 @@ function setProgramUniformnf(n,gl,program,attribute,x=0.0,y=0.0,z=0.0,w=1)
 	}
 	
 }
+function createArrayBuffer(gl,array,program,attribute,size)
+{
+	var vertexBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER,array,gl.STATIC_DRAW);
+	var position = gl.getAttribLocation(program,attribute);
+	gl.vertexAttribPointer(position,size,gl.FLOAT,false,0,0);
+	gl.enableVertexAttribArray(position);
+}

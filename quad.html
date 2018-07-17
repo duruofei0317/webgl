@@ -1,0 +1,38 @@
+<html>
+<head>
+<script type="text/javascript" src="lib.js"></script>
+</head>
+<body>
+<canvas id="canvas" height="600" width="600" style="background-color:black"></canvas>
+<script id="vShader" type="x-shader/x-vertex">
+    attribute vec4 a_Postion;
+    void main(){
+        gl_Position = a_Postion;
+    }
+</script>
+<script id="fShader" type="x-shader/x-fragment">
+	precision mediump float;
+	uniform vec4 u_FragColor;
+    void main(){
+        gl_FragColor =u_FragColor;
+    }
+</script>
+<script>
+var postions=[];
+var canvas = document.getElementById("canvas");
+var gl = canvas.getContext("webgl");
+var vShaderSource=getScriptSource("vShader");
+var fShaderSource=getScriptSource("fShader")
+var shaderProgram = addShader(gl,vShaderSource,fShaderSource);
+var array=new Float32Array([-0.5,0.5,-0.5,-0.5,0.5,0.5,0.5,-0.5]);
+function draw(gl,shaderProgram)
+{	
+	createArrayBuffer(gl,array,shaderProgram,'a_Postion',2);
+	setProgramUniformnf(4,gl,shaderProgram,'u_FragColor',Math.random(),Math.random(),Math.random());
+	gl.drawArrays(gl.TRIANGLE_STRIP,0,array.length/2);
+	
+}
+render(true,gl,shaderProgram,draw);
+</script>
+</body>
+</html>
