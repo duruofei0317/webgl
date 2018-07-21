@@ -33,14 +33,14 @@ function clearBackground(gl,r=0,g=0,b=0)
 	gl.clearColor(r,g,b,1);
 	gl.clear(gl.COLOR_BUFFER_BIT);
 }
-function render(clean,gl,shaderProgram,draw,r=0,g=0,b=0)
+function render(clean,gl,shaderProgram,draw,time,r=0,g=0,b=0)
 {
 	if(clean)
 	{
 		clearBackground(gl,r,g,b);
 	}
 	gl.useProgram(shaderProgram);
-	draw(gl,shaderProgram);
+	draw(gl,shaderProgram,time);
 }
 function setProgramAttributenf(n,gl,program,attribute,x=0.0,y=0.0,z=0.0,w=1)
 {
@@ -97,4 +97,17 @@ function createArrayBuffer(gl,array,program,attribute,size)
 	var position = gl.getAttribLocation(program,attribute);
 	gl.vertexAttribPointer(position,size,gl.FLOAT,false,0,0);
 	gl.enableVertexAttribArray(position);
+}
+function animation(dosome)
+{
+	var time=new Date();
+	function tick()
+	{
+		
+		var now=new Date();
+		dosome(now-time);
+		time=now;
+		requestAnimationFrame(tick);
+	}
+	requestAnimationFrame(tick);
 }
