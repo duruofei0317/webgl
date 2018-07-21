@@ -84,6 +84,11 @@ function setProgramUniformnf(n,gl,program,attribute,x=0.0,y=0.0,z=0.0,w=1)
 	}
 	
 }
+function setProgramUniform4Mat(gl,program,attribute,mat)
+{
+	var position = gl.getUniformLocation(program,attribute);
+	gl.uniformMatrix4fv(position,false,mat);
+}
 function createArrayBuffer(gl,array,program,attribute,size)
 {
 	var vertexBuffer = gl.createBuffer();
