@@ -89,14 +89,29 @@ function setProgramUniform4Mat(gl,program,attribute,mat)
 	var position = gl.getUniformLocation(program,attribute);
 	gl.uniformMatrix4fv(position,false,mat);
 }
-function createArrayBuffer(gl,array,program,attribute,size)
+function createArrayBuffer(gl,array,program,attribute,size,trip=0)
 {
+	var position=null;
 	var vertexBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER,array,gl.STATIC_DRAW);
-	var position = gl.getAttribLocation(program,attribute);
-	gl.vertexAttribPointer(position,size,gl.FLOAT,false,0,0);
-	gl.enableVertexAttribArray(position);
+	if( typeof attribute  ==="string")
+	{
+		position= gl.getAttribLocation(program,attribute);
+		gl.vertexAttribPointer(position,size,gl.FLOAT,false,trip,0);
+		gl.enableVertexAttribArray(position);
+	}
+	else
+	{
+		var count=0;
+		for(var i in attribute)
+		{
+			position = gl.getAttribLocation(program,i);
+			gl.vertexAttribPointer(position,size[count],gl.FLOAT,false,trip,attribute[i]);
+			gl.enableVertexAttribArray(position);
+			++count;
+		}
+	}
 }
 function animation(dosome)
 {
