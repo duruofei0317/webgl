@@ -7,8 +7,8 @@
 <canvas id="canvas" height="600" width="600" style="background-color:black"></canvas>
 <script id="vShader" type="x-shader/x-vertex">
     attribute vec4 a_Postion;
-    attribute vec4 a_Color;
-    varying vec4 v_Color;
+    attribute vec2 a_Color;
+    varying vec2 v_Color;
     uniform mat4 u_ModelMatrix;
     void main(){
         gl_Position=u_ModelMatrix*a_Postion;
@@ -17,9 +17,10 @@
 </script>
 <script id="fShader" type="x-shader/x-fragment">
 	precision mediump float;
-	varying vec4 v_Color;
+    uniform sampler2D u_Sampler;
+	varying vec2 v_Color;
     void main(){
-        gl_FragColor =v_Color;
+        gl_FragColor =texture2D(u_Sampler,v_Color);
     }
 </script>
 <script>
@@ -30,23 +31,36 @@ var vShaderSource=getScriptSource("vShader");
 var fShaderSource=getScriptSource("fShader")
 var shaderProgram = addShader(gl,vShaderSource,fShaderSource);
 var array=new Float32Array([
-    0.0,0.5,1.0,0.0,1.0,
-    -0.5,-0.5,0.0,0.0,1.0,
-    0.5,-0.5,0.0,0.0,1.0
+    -0.5,0.5,0.0,1.0,
+    -0.5,-0.5,0.0,0.0,
+    0.5,0.5,1.0,1.0,
+    0.5,-0.5,1.0,0.0
     ]);
+
 function draw(gl,shaderProgram,time)
 {	
-    rotate+=90*time/1000;
+    rotate+=45*time/1000;
     if(rotate>360)rotate-=360;
     var t=array.BYTES_PER_ELEMENT;
-	createArrayBuffer(gl,array,shaderProgram,{'a_Postion':0,'a_Color':t*2},[2,3],t*5);
+	createArrayBuffer(gl,array,shaderProgram,{'a_Postion':0,'a_Color':t*2},[2,2],t*4);
     setProgramUniform4Mat(gl,shaderProgram,'u_ModelMatrix',new Matrix4().setRotate(rotate,0,0,1).translate(0.35,0,0).elements);
-	gl.drawArrays(gl.TRIANGLES,0,array.length/5);
+	gl.drawArrays(gl.TRIANGLE_STRIP,0,array.length/4);
 	
 }
-//render(true,gl,shaderProgram,draw);
+
+var flag=true;
 function dd (time)
 {
+    if(flag)
+    {
+        loadImage("example.jpg",function(e){
+    render(true,gl,shaderProgram,draw,time,0,0,0,function(){
+        createTexture(gl,shaderProgram,'u_Sampler',0,e.target);
+    });
+});
+        flag=false;
+    }
+
     render(true,gl,shaderProgram,draw,time);
 }
 animation(dd);

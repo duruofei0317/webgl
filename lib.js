@@ -33,13 +33,14 @@ function clearBackground(gl,r=0,g=0,b=0)
 	gl.clearColor(r,g,b,1);
 	gl.clear(gl.COLOR_BUFFER_BIT);
 }
-function render(clean,gl,shaderProgram,draw,time,r=0,g=0,b=0)
+function render(clean,gl,shaderProgram,draw,time,r=0,g=0,b=0,start)
 {
 	if(clean)
 	{
 		clearBackground(gl,r,g,b);
 	}
 	gl.useProgram(shaderProgram);
+	if(start)start();
 	draw(gl,shaderProgram,time);
 }
 function setProgramAttributenf(n,gl,program,attribute,x=0.0,y=0.0,z=0.0,w=1)
@@ -125,4 +126,23 @@ function animation(dosome)
 		requestAnimationFrame(tick);
 	}
 	requestAnimationFrame(tick);
+}
+function loadImage(url,action)
+{
+	var image = new Image();
+	image.onload=action;
+	image.src=url;
+}
+function createTexture(gl,program,attribute,num,image)
+{
+	var texture = gl.createTexture();
+	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,1);
+	gl.activeTexture(gl['TEXTURE'+num]);
+	gl.bindTexture(gl.TEXTURE_2D,texture);
+	gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,image);
+	var loaction = gl.getUniformLocation(program,attribute);
+	gl.uniform1i(loaction,num);		
 }
