@@ -38,6 +38,7 @@ function render(clean,gl,shaderProgram,draw,time,r=0,g=0,b=0,start)
 	if(clean)
 	{
 		clearBackground(gl,r,g,b);
+		gl.clear(gl.DEPTH_BUFFER_BIT);
 	}
 	gl.useProgram(shaderProgram);
 	if(start)start();
@@ -113,6 +114,12 @@ function createArrayBuffer(gl,array,program,attribute,size,trip=0)
 			++count;
 		}
 	}
+}
+function setIndexsBuffer(gl,array,program)
+{
+	var vertexBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,vertexBuffer);
+	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,array,gl.STATIC_DRAW);
 }
 function animation(dosome)
 {
