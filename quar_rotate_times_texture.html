@@ -18,9 +18,13 @@
 <script id="fShader" type="x-shader/x-fragment">
 	precision mediump float;
     uniform sampler2D u_Sampler;
+    uniform sampler2D u_Sampler1;
 	varying vec2 v_Color;
     void main(){
-        gl_FragColor =texture2D(u_Sampler,v_Color);
+        vec4 a=texture2D(u_Sampler,v_Color);
+        vec4 b=texture2D(u_Sampler1,v_Color);
+        float c=0.2;
+        gl_FragColor =b*c+a*(1.0-c);
     }
 </script>
 <script>
@@ -51,13 +55,18 @@ function draw(gl,shaderProgram,time)
 var flag=true;
 function dd (time)
 {
+    var image=null
     if(flag)
     {
         loadImage("example.jpg",function(e){
-    render(true,gl,shaderProgram,draw,time,0,0,0,function(){
-        createTexture(gl,shaderProgram,'u_Sampler',0,e.target);
+            image=e.target;
+             loadImage("example1.jpg",function(e1){
+                render(true,gl,shaderProgram,draw,time,0,0,0,function(){
+                        createTexture(gl,shaderProgram,'u_Sampler',0,image);
+                        createTexture(gl,shaderProgram,'u_Sampler1',1,e1.target);
+                    });
+             });
     });
-});
         flag=false;
     }
 
@@ -67,3 +76,4 @@ animation(dd);
 </script>
 </body>
 </html>
+ 
