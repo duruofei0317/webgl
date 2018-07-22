@@ -1,0 +1,79 @@
+<html>
+<head>
+<script type="text/javascript" src="lib.js"></script>
+<script type="text/javascript" src="cuon-matrix.js"></script>
+</head>
+<body>
+<canvas id="canvas" height="600" width="600" style="background-color:black"></canvas>
+<script id="vShader" type="x-shader/x-vertex">
+    attribute vec4 a_Postion;
+    attribute vec2 a_Color;
+    varying vec2 v_Color;
+    uniform mat4 u_ModelMatrix;
+    void main(){
+        gl_Position=u_ModelMatrix*a_Postion;
+        v_Color=a_Color;
+    }
+</script>
+<script id="fShader" type="x-shader/x-fragment">
+	precision mediump float;
+    uniform sampler2D u_Sampler;
+    uniform sampler2D u_Sampler1;
+	varying vec2 v_Color;
+    void main(){
+        vec4 a=texture2D(u_Sampler,v_Color);
+        vec4 b=texture2D(u_Sampler1,v_Color);
+        float c=0.2;
+        gl_FragColor =b*c+a*(1.0-c);
+    }
+</script>
+<script>
+var rotate=0;
+var canvas = document.getElementById("canvas");
+var gl = canvas.getContext("webgl");
+var vShaderSource=getScriptSource("vShader");
+var fShaderSource=getScriptSource("fShader")
+var shaderProgram = addShader(gl,vShaderSource,fShaderSource);
+var array=new Float32Array([
+    -0.5,0.5,0.0,1.0,
+    -0.5,-0.5,0.0,0.0,
+    0.5,0.5,1.0,1.0,
+    0.5,-0.5,1.0,0.0
+    ]);
+
+function draw(gl,shaderProgram,time)
+{	
+    rotate+=45*time/1000;
+    if(rotate>360)rotate-=360;
+    var t=array.BYTES_PER_ELEMENT;
+	createArrayBuffer(gl,array,shaderProgram,{'a_Postion':0,'a_Color':t*2},[2,2],t*4);
+    setProgramUniform4Mat(gl,shaderProgram,'u_ModelMatrix',new Matrix4().setRotate(rotate,0,0,1).translate(0.35,0,0).elements);
+	gl.drawArrays(gl.TRIANGLE_STRIP,0,array.length/4);
+	
+}
+
+var flag=true;
+function dd (time)
+{
+    var image=null
+    if(flag)
+    {
+        loadImage("example.jpg",function(e){
+            image=e.target;
+             loadImage("example1.jpg",function(e1){
+                render(true,gl,shaderProgram,draw,time,0,0,0,function(){
+                        createTexture(gl,shaderProgram,'u_Sampler',0,image);
+                        createTexture(gl,shaderProgram,'u_Sampler1',1,e1.target);
+                    });
+             });
+    });
+        flag=false;
+    }
+
+    render(true,gl,shaderProgram,draw,time);
+}
+animation(dd);
+</script>
+</body>
+</html>
+ 

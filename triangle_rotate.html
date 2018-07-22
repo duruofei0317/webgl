@@ -6,9 +6,12 @@
 <canvas id="canvas" height="600" width="600" style="background-color:black"></canvas>
 <script id="vShader" type="x-shader/x-vertex">
     attribute vec4 a_Postion;
-    uniform vec4 u_Translation;
+    uniform float u_CosB,u_SinB;
     void main(){
-        gl_Position = a_Postion+u_Translation;
+        gl_Position.x=a_Postion.x*u_CosB-a_Postion.y*u_SinB;
+        gl_Position.y=a_Postion.x*u_SinB+a_Postion.y*u_CosB;
+        gl_Position.z=a_Postion.z;
+        gl_Position.w=1.0;
     }
 </script>
 <script id="fShader" type="x-shader/x-fragment">
@@ -19,7 +22,9 @@
     }
 </script>
 <script>
-var postions=[];
+var rotate=Math.random()*360*Math.PI/180;
+var cosRotate=Math.cos(rotate);
+var sinRotate=Math.sin(rotate);
 var canvas = document.getElementById("canvas");
 var gl = canvas.getContext("webgl");
 var vShaderSource=getScriptSource("vShader");
@@ -32,6 +37,8 @@ function draw(gl,shaderProgram)
     
 	setProgramUniformnf(4,gl,shaderProgram,'u_FragColor',Math.random(),Math.random(),Math.random());
     setProgramUniformnf(4,gl,shaderProgram,'u_Translation',0.5,0.5,0,0);
+    setProgramUniformnf(1,gl,shaderProgram,'u_CosB',cosRotate);
+    setProgramUniformnf(1,gl,shaderProgram,'u_SinB',sinRotate);
 	gl.drawArrays(gl.TRIANGLES,0,array.length/2);
 	
 }
