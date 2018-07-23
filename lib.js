@@ -91,6 +91,11 @@ function setProgramUniform4Mat(gl,program,attribute,mat)
 	var position = gl.getUniformLocation(program,attribute);
 	gl.uniformMatrix4fv(position,false,mat);
 }
+function setProgramUniform3fv(gl,program,attribute,mat)
+{
+	var position = gl.getUniformLocation(program,attribute);
+	gl.uniform3fv(position,mat);
+}
 function createArrayBuffer(gl,array,program,attribute,size,trip=0)
 {
 	var position=null;
